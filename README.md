@@ -1,12 +1,13 @@
 # Website Summarizer CLI
 
-A command-line tool that uses OpenAI's GPT model to automatically summarize website content. The tool scrapes web pages, extracts meaningful text content, and generates concise markdown summaries.
+A command-line tool that uses OpenAI's GPT model or Ollama with Llama 3.2 to automatically summarize website content. The tool scrapes web pages, extracts meaningful text content, and generates concise markdown summaries.
 
 ## Features
 
 - **CLI Interface**: Easy-to-use command-line interface with argument parsing
 - **Web Scraping**: Automatically extracts and cleans website content
-- **AI-Powered Summaries**: Uses OpenAI's GPT-4o-mini model for intelligent summarization
+- **AI-Powered Summaries**: Uses OpenAI's GPT-4o-mini model or Ollama with Llama 3.2 for intelligent summarization
+- **Dual Model Support**: Automatically falls back to local Llama 3.2 if OpenAI API key is not available
 - **Flexible Output**: Print to console or save to file
 - **Error Handling**: Robust error handling for network issues and API problems
 - **Verbose Mode**: Optional detailed output for debugging
@@ -16,7 +17,8 @@ A command-line tool that uses OpenAI's GPT model to automatically summarize webs
 ### Prerequisites
 
 - Python 3.7 or higher
-- OpenAI API key
+- OpenAI API key (optional - will use Ollama if not provided)
+- Ollama (for local model usage)
 
 ### Setup
 
@@ -31,10 +33,10 @@ A command-line tool that uses OpenAI's GPT model to automatically summarize webs
    Or install manually:
 
    ```bash
-   pip install openai requests beautifulsoup4 python-dotenv
+   pip install openai requests beautifulsoup4 python-dotenv ollama
    ```
 
-3. **Set up your OpenAI API key**:
+3. **Set up your OpenAI API key** (optional):
 
    Create a `.env` file in the project directory:
 
@@ -43,6 +45,14 @@ A command-line tool that uses OpenAI's GPT model to automatically summarize webs
    ```
 
    Replace `your_api_key_here` with your actual OpenAI API key.
+
+   **Note**: If no API key is provided, the tool will automatically use Ollama with Llama 3.2.
+
+4. **Install Ollama** (for local model usage):
+
+   Visit [ollama.ai](https://ollama.ai) to download and install Ollama.
+
+   The tool will automatically pull the Llama 3.2 model on first use.
 
 ## Usage
 
@@ -62,7 +72,7 @@ python run.py https://example.com --output summary.md
 
 ### Verbose Mode
 
-Get detailed output including the URL being processed:
+Get detailed output including the URL being processed and which model is being used:
 
 ```bash
 python run.py https://example.com --verbose
@@ -75,6 +85,15 @@ View all available options:
 ```bash
 python run.py --help
 ```
+
+## Model Selection
+
+The tool automatically selects the appropriate model:
+
+- **OpenAI GPT-4o-mini**: Used when a valid OpenAI API key is found in the `.env` file
+- **Ollama Llama 3.2**: Used as fallback when no OpenAI API key is available
+
+The tool will automatically download the Llama 3.2 model on first use if it's not already available.
 
 ## Command Line Arguments
 
@@ -99,10 +118,11 @@ python run.py https://openai.com
 python run.py https://github.com --output github_summary.md
 ```
 
-### Verbose output for debugging
+### Using local model (no API key required)
 
 ```bash
-python run.py https://example.com --verbose --output debug_summary.md
+# Remove or comment out OPENAI_API_KEY from .env file
+python run.py https://example.com --verbose
 ```
 
 ## How It Works
